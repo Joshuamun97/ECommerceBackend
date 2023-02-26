@@ -11,7 +11,7 @@ router.get('/', (req, res) => {
     const ProductData = Product.findAll({
       include: [{ model: Category }, { model: Tag }]
     });
-    res.status(200).json(productData);
+    res.status(200).json(ProductData);
   } catch (err) {
     res.status(500).json(err);
   }
