@@ -6,31 +6,29 @@ const { Category, Product } = require('../../models');
 router.get('/', (req, res) => {
   // find all categories
   // be sure to include its associated Products
-  try {
-    const allCategoriesData = Category.findAll({
-      include: [{ model: Product }]
+  Category.findAll({})
+    .then(productData => res.json(productData))
+    .catch(err => {
+      console.log(err);
+      res.status(500).json(err);
     });
-    res.status(200).json(allCategoriesData);
-  } catch (err) {
-    res.status(500).json(err);
-  }
 });
 
 router.get('/:id', (req, res) => {
   // find one category by its `id` value
   // be sure to include its associated Products
-  try {
-    const singleCategoryData = Category.findByPk(req.params.id, {
-      include: [{ model: Product }]
-    });
-    if (!singleCategoryData) {
-      res.status(404).json({ message: 'There is no Category with that id' });
-      return;
+  Category.findOne(
+    {
+      where: {
+        id: req.params.id
+      },
     }
-    res.status(200).json(singleCategoryData);
-  } catch (err) {
-    res.status(500).json(err);
-  }
+  )
+    .then(singleCategoryData => res.json(singleCategoryData))
+    .catch(err => {
+      console.log(err);
+      res.status(500).json(err);
+    });
 });
 
 router.post('/', (req, res) => {
