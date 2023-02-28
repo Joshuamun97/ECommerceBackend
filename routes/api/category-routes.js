@@ -57,20 +57,15 @@ router.put('/:id', (req, res) => {
 
 router.delete('/:id', (req, res) => {
   // delete a category by its `id` value
-  try {
-    const singleCategoryData = Category.destroy({
-      where: {
-        id: req.params.id
-      }
-    });
-    if (!singleCategoryData) {
-      res.status(404).json({ message: 'There is no Category with that id' });
-      return;
-    }
-    res.status(200).json(singleCategoryData);
-  } catch(err) {
-    res.status(500).json(err);
-  }
+  Category.destroy({
+    where: {
+      id: req.params.id,
+    },
+  })
+    .then((deletedCategory) => {
+      res.json(deletedCategory);
+    })
+    .catch((err) => res.json(err));
   
 });
 
