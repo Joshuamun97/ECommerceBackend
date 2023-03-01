@@ -67,6 +67,7 @@ router.post('/', (req, res) => {
 
 // update product
 router.put('/:id', (req, res) => {
+  console.log('test');
 //   // update product data
   Product.update(req.body, {
     where: {
@@ -74,10 +75,11 @@ router.put('/:id', (req, res) => {
     },
   })
     .then((product) => {
-//       // find all associated tags from ProductTag
-      return ProductTag.findAll({ where: { product_id: req.params.id } });
-    })
-    .then((productTags) => {
+   // find all associated tags from ProductTag
+   if(req.body.tagIds && req.body.tagIds.length) {
+      const productTags = ProductTag.findAll({ where: { product_id: req.params.id } });
+  
+    // ((productTags) => {
       // get list of current tag_ids
       const productTagIds = productTags.map(({ tag_id }) => tag_id);
 //       // create filtered list of new tag_ids
@@ -98,7 +100,9 @@ router.put('/:id', (req, res) => {
       return Promise.all([
         ProductTag.destroy({ where: { id: productTagsToRemove } }),
         ProductTag.bulkCreate(newProductTags),
-      ]);
+    ]);
+  }
+ return res.json(product);
     })
     .then((updatedProductTags) => res.json(updatedProductTags))
     .catch((err) => {
